@@ -1,8 +1,13 @@
 #include "FStructGenerator.h"
 #include "FDelegateGenerator.h"
 #include "FGeneratorCore.h"
+#include "UEVersion.h"
 #include "Binding/Class/FBindingClass.h"
+#if UE_STRUCT_UTILS_U_USER_DEFINED_STRUCT
+#include "StructUtils/UserDefinedStruct.h"
+#else
 #include "Engine/UserDefinedStruct.h"
+#endif
 #include "Kismet2/StructureEditorUtils.h"
 #include "Animation/AnimBlueprintGeneratedClass.h"
 #include "Common/FUnrealCSharpFunctionLibrary.h"

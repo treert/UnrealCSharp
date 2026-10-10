@@ -61,6 +61,7 @@ struct TBaseStructure<FAssetBundleEntry>
 	}
 };
 
+#if UE_T_BASE_STRUCTURE_F_BOX
 template <>
 struct TBaseStructure<FBox>
 {
@@ -69,7 +70,9 @@ struct TBaseStructure<FBox>
 		return StaticGetBaseStructureInternal(*BINDING_REMOVE_PREFIX_CLASS_STR(FBox));
 	}
 };
+#endif
 
+#if UE_T_BASE_STRUCTURE_F_BOX_SPHERE_BOUNDS
 template <>
 struct TBaseStructure<FBoxSphereBounds>
 {
@@ -78,6 +81,7 @@ struct TBaseStructure<FBoxSphereBounds>
 		return StaticGetBaseStructureInternal(*BINDING_REMOVE_PREFIX_CLASS_STR(FBoxSphereBounds));
 	}
 };
+#endif
 
 #if UE_T_BASE_STRUCTURE_F_INT_VECTOR
 template <>

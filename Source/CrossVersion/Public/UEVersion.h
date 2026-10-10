@@ -2,6 +2,13 @@
 
 #include "Misc/EngineVersionComparison.h"
 
+// HAZE 引擎分支（AngelScript 集成）标识。
+// 该宏由 CrossVersion.Build.cs 检测引擎 Plugins/Angelscript 目录是否存在自动注入；
+// 未经过模块系统编译时（例如被外部工具单独解析）回退为 0，即按原版 UE 处理。
+#ifndef UNREALCSHARP_HAZE_ANGELSCRIPT
+#define UNREALCSHARP_HAZE_ANGELSCRIPT 0
+#endif
+
 #define UE_VERSION_START(MajorVersion, MinorVersion, PatchVersion) \
 	UE_GREATER_SORT(ENGINE_MAJOR_VERSION, MajorVersion, UE_GREATER_SORT(ENGINE_MINOR_VERSION, MinorVersion, UE_GREATER_SORT(ENGINE_PATCH_VERSION, PatchVersion, true)))
 
@@ -182,3 +189,9 @@
 #define UE_U_STRUCT_F_TEST_UNINITIALIZED_SCRIPT_STRUCT_MEMBERS_TEST UE_VERSION_START(5, 7, 0)
 
 #define UE_SET_HANDLE_INFORMATION UE_VERSION_START(5, 7, 0)
+
+#define UE_T_MULTICAST_SCRIPT_DELEGATE_PROCESS_DELEGATE UE_VERSION_START(5, 8, 0)
+
+#define UE_T_BASE_STRUCTURE_F_BOX !UNREALCSHARP_HAZE_ANGELSCRIPT
+
+#define UE_T_BASE_STRUCTURE_F_BOX_SPHERE_BOUNDS !UNREALCSHARP_HAZE_ANGELSCRIPT

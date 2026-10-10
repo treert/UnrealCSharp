@@ -1177,7 +1177,7 @@ TMap<FString, TArray<FString>> FUnrealCSharpFunctionLibrary::LoadFileToArray(con
 					}
 				}
 
-				Result.Add(Key, Array);
+				Result.Add(FString(Key.ToView()), Array);
 			}
 		}
 	}
@@ -1201,7 +1201,7 @@ TMap<FString, FString> FUnrealCSharpFunctionLibrary::LoadFileToString(const FStr
 
 			for (const auto& [Key, Value] : JsonObject->Values)
 			{
-				Result.Add(Key, Value->AsString());
+				Result.Add(FString(Key.ToView()), Value->AsString());
 			}
 		}
 	}
@@ -1285,7 +1285,7 @@ const TArray<FString>& FUnrealCSharpFunctionLibrary::GetEngineModuleList()
 			{
 				for (const auto& [Key, PLACEHOLDER] : OutObject->Get()->Values)
 				{
-					EngineModuleList.AddUnique(Key);
+					EngineModuleList.AddUnique(FString(Key.ToView()));
 				}
 			}
 
@@ -1293,7 +1293,7 @@ const TArray<FString>& FUnrealCSharpFunctionLibrary::GetEngineModuleList()
 			{
 				for (const auto& [Key, PLACEHOLDER] : OutObject->Get()->Values)
 				{
-					EngineModuleList.AddUnique(Key);
+					EngineModuleList.AddUnique(FString(Key.ToView()));
 				}
 			}
 		}
@@ -1322,7 +1322,7 @@ const TArray<FString>& FUnrealCSharpFunctionLibrary::GetProjectModuleList()
 			{
 				for (const auto& [Key, PLACEHOLDER] : OutObject->Get()->Values)
 				{
-					ProjectModuleList.AddUnique(Key);
+					ProjectModuleList.AddUnique(FString(Key.ToView()));
 				}
 			}
 
@@ -1330,7 +1330,7 @@ const TArray<FString>& FUnrealCSharpFunctionLibrary::GetProjectModuleList()
 			{
 				for (const auto& [Key, PLACEHOLDER] : OutObject->Get()->Values)
 				{
-					ProjectModuleList.AddUnique(Key);
+					ProjectModuleList.AddUnique(FString(Key.ToView()));
 				}
 			}
 		}

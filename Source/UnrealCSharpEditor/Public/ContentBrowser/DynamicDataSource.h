@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "ContentBrowserDataSource.h"
 #include "ICollectionManager.h"
+#include "Misc/Change.h"
 #include "DynamicHierarchy.h"
 #include "DynamicFileItemDataPayload.h"
 #include "DynamicFolderItemDataPayload.h"
