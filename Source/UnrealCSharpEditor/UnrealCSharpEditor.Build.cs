@@ -59,9 +59,10 @@ public class UnrealCSharpEditor : ModuleRules
 				"Compiler",
 				"UnrealCSharpCore",
 				"CrossVersion",
-				// ... add private dependencies that you statically link with here ...	
+				"AssetRegistry",
+				// ... add private dependencies that you statically link with here ...
 			}
-			);
+		);
 		
 		
 		DynamicallyLoadedModuleNames.AddRange(
