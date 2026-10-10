@@ -949,6 +949,33 @@ FString FClassGenerator::GetFunctionDefaultParam(const UFunction* InFunction, FP
 	return GetCppFunctionDefaultParam(InFunction, InProperty);
 }
 
+// FEnumGenerator 导出枚举项时，遇到值等于 MaxEnumValue 的项（如 _MAX）即停止导出，
+// 因此判断某个枚举项是否会出现在生成的 C# 枚举中，必须遵循相同的截断规则
+static bool IsEnumValueHidden(const UEnum* InEnum, const FString& InValueName)
+{
+	if (InEnum == nullptr || InEnum->NumEnums() <= 1)
+	{
+		return false;
+	}
+
+	const auto MaxEnumValue = InEnum->GetMaxEnumValue();
+
+	for (auto Index = 0; Index < InEnum->NumEnums(); ++Index)
+	{
+		if (InEnum->GetValueByIndex(Index) == MaxEnumValue)
+		{
+			return true;
+		}
+
+		if (InEnum->GetNameStringByIndex(Index) == InValueName)
+		{
+			return false;
+		}
+	}
+
+	return false;
+}
+
 FString FClassGenerator::GetCppFunctionDefaultParam(const UFunction* InFunction, FProperty* InProperty)
 {
 	const auto Key = FString::Printf(TEXT("CPP_Default_%s"), *InProperty->GetName());
@@ -968,8 +995,15 @@ FString FClassGenerator::GetCppFunctionDefaultParam(const UFunction* InFunction,
 
 			if (MetaData.StartsWith("Type::"))
 			{
-				return FString::Printf(TEXT(" = %s.%s"), *EnumName,
-				                       *MetaData.Right(MetaData.Len() - 6));
+				const auto EnumeratorName = MetaData.Right(MetaData.Len() - 6);
+
+				if (IsEnumValueHidden(ByteProperty->Enum, EnumeratorName))
+				{
+					return FString::Printf(TEXT(" = (%s)%lld"), *EnumName,
+					                       ByteProperty->Enum->GetValueByName(*EnumeratorName));
+				}
+
+				return FString::Printf(TEXT(" = %s.%s"), *EnumName, *EnumeratorName);
 			}
 			else
 			{
@@ -983,6 +1017,12 @@ FString FClassGenerator::GetCppFunctionDefaultParam(const UFunction* InFunction,
 				}
 				else
 				{
+					if (IsEnumValueHidden(ByteProperty->Enum, MetaData))
+					{
+						return FString::Printf(TEXT(" = (%s)%lld"), *EnumName,
+						                       ByteProperty->Enum->GetValueByName(*MetaData));
+					}
+
 					return FString::Printf(TEXT(" = %s.%s"), *EnumName, *MetaData);
 				}
 			}
@@ -1039,6 +1079,12 @@ FString FClassGenerator::GetCppFunctionDefaultParam(const UFunction* InFunction,
 
 	if (const auto EnumProperty = CastField<FEnumProperty>(InProperty))
 	{
+		if (IsEnumValueHidden(EnumProperty->GetEnum(), MetaData))
+		{
+			return FString::Printf(TEXT(" = (%s)%lld"), *EnumProperty->GetEnum()->GetName(),
+			                       EnumProperty->GetEnum()->GetValueByName(*MetaData));
+		}
+
 		return FString::Printf(TEXT(" = %s.%s"), *EnumProperty->GetEnum()->GetName(), *MetaData);
 	}
 

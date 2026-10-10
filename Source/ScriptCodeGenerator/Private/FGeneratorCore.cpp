@@ -255,11 +255,26 @@ FString FGeneratorCore::GetPropertyType(FProperty* Property)
 
 	if (const auto FieldPathProperty = CastField<FFieldPathProperty>(Property))
 	{
+		// 仅 C# 运行时(Script/UE/Reflection/Property)中实际存在的 F*Property 类才能作为
+		// TFieldPath<T> 的类型参数，其余（如 FOptionalProperty）一律回退到基类 FProperty
+		static TSet<FString> SupportedPropertyClasses
+		{
+			TEXT("ArrayProperty"),
+			TEXT("DoubleProperty"),
+			TEXT("Int64Property"),
+			TEXT("MapProperty"),
+			TEXT("MulticastDelegateProperty"),
+			TEXT("StructProperty")
+		};
+
+		const auto PropertyClassName = FieldPathProperty->PropertyClass->GetName();
+
 		return FString::Printf(TEXT(
 			"TFieldPath<F%s>"
 		),
-		                       *FieldPathProperty->PropertyClass->GetName()
-		);
+		                       SupportedPropertyClasses.Contains(PropertyClassName)
+			                       ? *PropertyClassName
+			                       : TEXT("Property"));
 	}
 
 #if UE_F_OPTIONAL_PROPERTY
